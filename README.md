@@ -8,6 +8,17 @@ do repositório de um projeto é padrão que ninguém acha seis meses depois.
 | --- | --- |
 | [**Checklist de LP**](checklist-lp.md) | Tudo que uma landing page da Genos precisa ter antes de ir ao ar, em quatro frentes: **medição** (GA4, Pixel, eventos, UTM, Search Console), **SEO técnico**, **performance** e **conteúdo**. Com o roteiro em fases, as armadilhas que já custaram caro, o inventário das páginas no ar e a lista de verificação final. |
 
+## O inventário vive numa planilha
+
+O que está no ar, a convenção de UTM e o histórico de links ficam em
+[**UTMs e páginas · Genos**](https://docs.google.com/spreadsheets/d/16Imi0K-b4Vb7sijtPDagR8-5IAbJ4YQ8177BRfNpAzc/edit).
+Lá a lista de origens é fechada e o link se monta por fórmula, então não dá para
+escrever `ig` num dia e `instagram` no outro — que é o que cria dois canais no
+GA4 que nunca somam.
+
+O checklist aqui guarda o porquê; a planilha guarda o estado. Quando as duas
+divergirem, vale a planilha.
+
 ## Para começar uma LP nova
 
 A pasta [`template-lp/`](template-lp/) tem os arquivos para copiar: as tags, o

@@ -610,8 +610,24 @@ não de código: **exemplo exclui, categoria inclui.**
 
 # PARTE 3 · O QUE EXISTE HOJE
 
-Mantenha esta tabela viva. Ela responde a única pergunta que importa antes de rodar
-tráfego: **esta página está medida?** Linha nova entra aqui antes do primeiro anúncio.
+> **A versão viva deste inventário é a planilha
+> [UTMs e páginas · Genos](https://docs.google.com/spreadsheets/d/16Imi0K-b4Vb7sijtPDagR8-5IAbJ4YQ8177BRfNpAzc/edit).**
+> Página nova entra lá, antes do primeiro anúncio. A tabela abaixo é uma fotografia
+> de 01/10/2026, para quem lê o repositório sem abrir o Drive — **se as duas
+> divergirem, vale a planilha.**
+
+A planilha tem três abas, e elas mudam em ritmos diferentes de propósito:
+
+| Aba | O que é | Com que frequência muda |
+| --- | --- | --- |
+| **Páginas** | o inventário: esta página está medida? | a cada LP nova |
+| **Convenção** | o vocabulário fechado de `utm_source` e `utm_medium` | quase nunca |
+| **Links gerados** | o histórico, com o link montado por fórmula | a cada campanha |
+
+> **UTM não é propriedade da página, é propriedade do anúncio.** A mesma LP vai ter
+> dezenas de UTMs ao longo do tempo. Por isso a convenção e o histórico são abas
+> separadas do inventário, e não colunas dele — foi o erro de formato do documento
+> que a planilha substituiu.
 
 Situação em 01/10/2026:
 
