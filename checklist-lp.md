@@ -123,6 +123,8 @@ até clicar no botão final.
 | **Tag herdada de migração** | O site sai do WordPress com as tags do Site Kit coladas no código novo. Elas apontam para propriedades de terceiro e ninguém percebe, porque não parece erro: parece pouco tráfego. (§1.6) |
 | **Conversão que morava no GTM** | Remover um contêiner de terceiro apaga junto o evento de Lead, sem quebrar nada na tela. As campanhas só param de receber sinal. (§1.6) |
 | **Evento com nome inventado** | `lead_enviado` em vez de `generate_lead` vira evento solto que nenhuma campanha consegue usar para otimizar. (§2) |
+| **Aba renomeada no Sheets** | O Apps Script procura a aba pelo nome. Renomeou a aba e não mexeu no script: ele cria uma aba nova com o nome antigo e escreve lá, deixando a original órfã. Não dá erro. (§10.2) |
+| **Coluna que ensina o erro** | Chamar a coluna de `utm_medium` de "Formato" convida a escrever um formato nela. Foi assim que um lead chegou com `utm_medium=set.26`. (§10.3) |
 | **Parâmetro com acento** | Você cadastra `saída`, a página manda `saida`. O GA aceita calado e a dimensão fica existindo e sempre vazia. Pior que não existir. |
 | **Filtro em "Teste"** | Fica lá parecendo configurado e não filtra nada. Todo teste interno vira lead e a conversão mente. |
 | **Coleção não publicada** | Search Console vinculado, relatórios invisíveis. |
@@ -606,9 +608,76 @@ E vale a regra que saiu da bifurcação da `/avaliacao` (§1.8), porque ela é d
 não de código: **exemplo exclui, categoria inclui.**
 
 ---
+
+## §10. Onde o lead cai
+
+Medição responde quanta gente chegou e converteu. Ela **não** guarda quem é a
+pessoa. Isso é outra planilha, e a separação é de propósito.
+
+### §10.1 Duas planilhas, e por que não uma
+
+| | Planilha de leads | Planilha de UTMs e páginas |
+| --- | --- | --- |
+| Contém | nome, WhatsApp, Instagram | nenhum dado pessoal |
+| Cresce | a cada lead | a cada campanha |
+| Quem precisa ver | comercial e CRC | quem sobe anúncio |
+| Quantas existem | **uma por funil** | **uma só, para tudo** |
+
+O argumento que decide não é organização, é acesso: **juntar as duas faria toda
+pessoa que precisa de um link ver o telefone de todos os leads.** Com dado pessoal
+em jogo, isso é questão de LGPD.
+
+**Uma por funil, não uma por campanha.** Formulários diferentes perguntam coisas
+diferentes — a aba de clínica tem 24 colunas e a de não-clínica, 17. Campanha nova
+entra como **linha**, não como planilha: é para isso que serve o `utm_campaign`.
+
+E uma regra para saber quando algo saiu do lugar: a planilha de leads responde
+*"quem é essa pessoa e de onde ela veio"*. Ela **não** responde *"qual campanha
+performou melhor"* — isso é GA4 cruzado com o Gerenciador da Meta. Quando alguém
+começa a montar relatório de performance dentro da planilha de leads, é sinal de
+que o GA4 não está sendo usado.
+
+### §10.2 O nome da aba é acoplamento invisível
+
+O Apps Script procura a aba pelo nome, numa constante no topo do arquivo. Quem
+renomeia uma aba no Sheets não tem como saber disso.
+
+E a falha é silenciosa: o script não dá erro ao não encontrar a aba — ele **cria
+uma nova** com o nome que procura e passa a escrever nela. A aba original fica
+órfã, com os leads antigos, e ninguém é avisado.
+
+Aconteceu aqui: a aba `Leads` virou `Clínicas` para ficar simétrica com
+`Outros negócios`, e a constante ficou para trás. **Renomeou aba, mexa no script
+na mesma hora** — e publique com *Nova versão*, nunca *Nova implantação*, senão a
+URL do `/exec` muda e a página passa a mandar lead para um endereço morto.
+
+### §10.3 Nomeie a coluna como o parâmetro, não como a ideia
+
+As colunas de origem na planilha de leads devem se chamar `utm_source`,
+`utm_medium`, `utm_campaign` e `utm_content` — os nomes reais dos parâmetros.
+
+Feio, e funciona. Com nomes traduzidos, quem preenche inventa a semântica: a
+coluna de `utm_medium` chamava-se "Formato", e chegou um lead com
+`utm_medium=set.26` — um mês no campo que define o canal, que o GA4 joga em "Não
+atribuído". O nome da coluna convidou ao erro.
+
+Com o nome do parâmetro, quem monta o anúncio vê a mesma palavra nos dois lugares
+e não tem o que interpretar.
+
+---
 ---
 
 # PARTE 3 · O QUE EXISTE HOJE
+
+## As duas planilhas
+
+| Planilha | Para quê |
+| --- | --- |
+| [**[Genos] UTMs e páginas**](https://docs.google.com/spreadsheets/d/16Imi0K-b4Vb7sijtPDagR8-5IAbJ4YQ8177BRfNpAzc/edit) | inventário das páginas, convenção de UTM e histórico de links |
+| [**[Funil AVALIAÇÃO] Leads**](https://docs.google.com/spreadsheets/d/1THyTEurgi6jYSL110C9FSwK6pse1psTCxnlz_yOyKYQ/edit) | os leads da calculadora, nas abas `Clínicas` e `Outros negócios` |
+
+Funil novo ganha a **sua** planilha de leads (§10.1) e **uma linha** na planilha de
+UTMs. Nunca o contrário.
 
 > **A versão viva deste inventário é a planilha
 > [UTMs e páginas · Genos](https://docs.google.com/spreadsheets/d/16Imi0K-b4Vb7sijtPDagR8-5IAbJ4YQ8177BRfNpAzc/edit).**
@@ -718,6 +787,7 @@ todo mundo marca sem olhar.
 | ☐ | Palavra-chave no título, `<h1>` e 1º parágrafo | Leitura |
 | ☐ | Anúncio e página usam as mesmas palavras | Leia o anúncio e a página em seguida |
 | ☐ | A LP está no inventário da Parte 3 | Esta página |
+| ☐ | O lead cai numa planilha de funil, e o nome da aba bate com a constante do Apps Script | Envie o lead de teste e veja em qual aba ele caiu (§10.2) |
 
 ## Uma vez por domínio, não por LP
 
