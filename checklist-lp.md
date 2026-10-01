@@ -1,11 +1,26 @@
-# Padrão de medição para LPs · Genos
+# Checklist de LP · Genos
 
-O que precisa estar de pé para uma landing page medir direito.
-Nasceu do funil AVALIAÇÃO, em 09/09/2026, e vale para as próximas, da Genos e de cliente.
+O que precisa estar de pé para uma landing page da Genos ir ao ar. Nasceu do funil
+AVALIAÇÃO em 09/09/2026 como padrão de medição, e cresceu em 01/10/2026 para cobrir as
+outras três frentes, quando uma varredura mostrou que medição redonda não impede uma LP
+de ir ao ar declarando `lang="en"` em página escrita em português.
+
+Quatro frentes, e elas falham de jeitos diferentes:
+
+| Frente | Como a falha aparece |
+| --- | --- |
+| **Medição** | não aparece. O relatório fica vazio e parece pouco tráfego |
+| **SEO técnico** | não aparece. A página some da busca e ninguém liga uma coisa à outra |
+| **Performance** | aparece no custo. CPC sobe porque a pessoa desiste antes de carregar |
+| **Conteúdo** | aparece na conversão. A pessoa chega e não reconhece o que procurava |
+
+**Nenhuma das quatro quebra a tela.** É por isso que existe uma lista: sem ela, o único
+jeito de descobrir é pelo prejuízo, meses depois.
 
 **A Parte 1 é o roteiro: siga na ordem.** A ordem não é estética — cada passo destrava o
 seguinte, e fazer fora de ordem trava. A Parte 2 explica o porquê de cada coisa, para
-quando alguém precisar decidir diferente.
+quando alguém precisar decidir diferente. A Parte 3 é o inventário do que está no ar. A
+Parte 4 é a lista final, a que alguém roda antes de apontar anúncio para a LP.
 
 ---
 ---
@@ -39,6 +54,22 @@ quando alguém precisar decidir diferente.
 - [ ] Pixel com `PageView`, `Lead` e `Contact` (§4.3)
 - [ ] Correspondência avançada: telefone **com DDI**, e o `init` **antes** do `track` (§4.4)
 - [ ] Todo disparo dentro de `try/catch` (§1.4)
+
+## Fase 1b · SEO técnico e performance, na mesma passada
+
+- [ ] **`<html lang="pt-BR">`.** O padrão de muito boilerplate é `en`, e ninguém repara
+      porque a página continua funcionando. (§7.1)
+- [ ] `robots.txt` permitindo o rastreamento, com a linha do `Sitemap:` (§7.2)
+- [ ] `sitemap.xml`, mesmo com uma URL só (§7.2)
+- [ ] **Um `<h1>` só**, com a palavra-chave principal, e `<h2>` para as seções (§7.3)
+- [ ] `alt` em toda imagem que carrega significado (§7.3)
+- [ ] Imagem em **WebP ou AVIF**, dimensionada para o tamanho real de exibição (§8.1)
+- [ ] Fonte com `display: swap` e só os pesos usados (§8.1)
+- [ ] **LCP abaixo de 2,5s em 4G**, medido no PageSpeed Insights (§8.2)
+- [ ] Nenhum salto de layout: `width`/`height` em imagem e espaço reservado para o que
+      carrega depois (§8.2)
+- [ ] **Palavra-chave principal definida** e presente no `<title>`, no `<h1>` e no
+      primeiro parágrafo (§9)
 
 ## Fase 2 · No GA4, ANTES de subir
 
@@ -466,6 +497,110 @@ as dimensões, marca os principais eventos e ajusta retenção, moeda e fuso —
 O ganho maior não é tempo: é que ninguém mais digita nome de parâmetro na mão.
 
 ---
+
+## §7. SEO técnico
+
+### §7.1 O `lang` errado é o defeito mais silencioso que existe
+
+`<html lang="en">` numa página em português não quebra nada. A página abre, o layout
+está certo, o formulário envia. E mesmo assim:
+
+- o Google pode servir a página para a busca errada, ou deixar de servir para a certa;
+- o leitor de tela lê português com fonética inglesa, e vira ruído;
+- o navegador oferece "traduzir esta página" para quem já fala o idioma dela.
+
+Aconteceu na `clinicas.genosgroup.com.br`, que foi ao ar com `lang="en"` e ficou assim
+até 01/10/2026. Ninguém percebeu porque **não há nada para perceber**: o defeito só
+existe para o robô e para quem usa leitor de tela.
+
+A causa é sempre a mesma: boilerplate em inglês. `create-next-app`, template do
+TanStack, starter do Vite — todos nascem com `en`. **Trocar é a primeira edição de um
+projeto novo**, antes de escrever qualquer linha.
+
+### §7.2 `robots.txt` e `sitemap.xml` numa LP de tráfego pago
+
+Parece inútil numa página que só recebe anúncio, e é justamente por isso que fica de
+fora. Dois motivos para existirem:
+
+1. **A LP acaba virando orgânica.** Página que converte é página que vira link em
+   prospecção, em bio, em resposta de e-mail. Sem sitemap ela demora muito mais para
+   entrar no índice.
+2. **O Search Console só reporta o que ele acha.** Sem sitemap, a LP não aparece nos
+   relatórios de cobertura — e você perde o aviso de que ela saiu do índice.
+
+O mínimo, que leva dois minutos:
+
+```
+# public/robots.txt
+User-agent: *
+Allow: /
+
+Sitemap: https://genosgroup.com.br/sitemap.xml
+```
+
+Cuidado com a regra do prefixo (§1.3): em LP servida sob um caminho, o arquivo precisa
+estar onde a rota alcança.
+
+**A exceção:** LP de teste, de campanha fechada ou com preço que não deve vazar pede
+`noindex` — e aí é decisão consciente, registrada na Fase 0, não esquecimento.
+
+### §7.3 Estrutura de título e `alt`
+
+Um `<h1>` só por página, com a palavra-chave principal. Mais de um `<h1>` não quebra
+nada, e é por isso que acontece: designer usa o tamanho que ficou bonito, não a
+hierarquia.
+
+`alt` só em imagem que carrega significado. Ícone decorativo leva `alt=""` — vazio de
+propósito, para o leitor de tela pular. `alt` em tudo é tão ruim quanto `alt` em nada:
+vira ruído.
+
+---
+
+## §8. Performance
+
+### §8.1 O peso vem quase sempre de imagem e fonte
+
+Antes de otimizar código, olhe esses dois. Numa LP eles costumam ser 80% do peso.
+
+- **Imagem em WebP ou AVIF**, e dimensionada para o tamanho real de exibição. Servir um
+  JPEG de 3000px num slot de 400px é o erro mais comum e o mais fácil de corrigir.
+- **Fonte com `display: swap`**, e só os pesos que a página usa. Cada peso é um arquivo.
+  Importar a família inteira para usar dois pesos é somar centenas de KB por nada.
+
+### §8.2 O que medir, e o limite
+
+Rode o **PageSpeed Insights** na URL final, e olhe o resultado de **celular**, não o de
+computador — é de celular que vem o tráfego de Meta.
+
+| Métrica | O que é | Limite |
+| --- | --- | --- |
+| **LCP** | quando o maior elemento aparece | abaixo de **2,5s** |
+| **CLS** | quanto o layout pula enquanto carrega | abaixo de **0,1** |
+| **INP** | quanto demora para responder ao toque | abaixo de **200ms** |
+
+O **CLS** é o que mais machucha conversão e o mais ignorado: a pessoa vai tocar no botão,
+o layout pula, ela toca em outra coisa. Previne-se com `width` e `height` em toda imagem
+e espaço reservado para o que carrega depois.
+
+> **Em tráfego pago, performance é custo.** Quem desiste antes de carregar foi clique
+> pago sem nenhuma chance de converter. Não é refinamento técnico: é CPA.
+
+---
+
+## §9. Conteúdo
+
+Uma **palavra-chave principal** por LP, decidida na Fase 0, junto com a URL. Ela precisa
+aparecer em três lugares: o `<title>`, o `<h1>` e o primeiro parágrafo.
+
+Não é SEO de truque — é coerência. Se a pessoa clicou num anúncio sobre orçamento parado
+e a página fala de "otimização de processos", ela não reconhece o que procurava e sai. O
+anúncio e a página precisam usar **as mesmas palavras**, e é a palavra-chave que amarra
+os dois.
+
+E vale a regra que saiu da bifurcação da `/avaliacao` (§1.8), porque ela é de conteúdo e
+não de código: **exemplo exclui, categoria inclui.**
+
+---
 ---
 
 # PARTE 3 · O QUE EXISTE HOJE
@@ -475,13 +610,17 @@ tráfego: **esta página está medida?** Linha nova entra aqui antes do primeiro
 
 Situação em 01/10/2026:
 
-| Página | Repositório | GA4 | Pixel | Grupo de conteúdo |
-| --- | --- | :---: | :---: | --- |
-| `genosgroup.com.br/` | `lp-genos-principal` | ✅ | ✅ | Site · Genos Group |
-| `genosgroup.com.br/avaliacao` | `pagina-funil-avaliacao` | ✅ | ✅ | Avaliação · Orçamento Parado |
-| `genosgroup.com.br/ebook` | `lp-genos-ebook` | ✅ | ✅ | LP · Ebook |
-| `genosgroup.com.br/receitaoculta` | `lp-form-receita-oculta-clinicas` | ✅ | ✅ | LP · Receita Oculta |
-| `clinicas.genosgroup.com.br` | `lp-genos-exclusivo-clinicas` | ✅ | ✅ | LP · Exclusivo Clínicas |
+| Página | Repositório | GA4 | Pixel | `lang` | robots | sitemap | Grupo de conteúdo |
+| --- | --- | :---: | :---: | :---: | :---: | :---: | --- |
+| `genosgroup.com.br/` | `lp-genos-principal` | ✅ | ✅ | ✅ | ❌ | ❌ | Site · Genos Group |
+| `genosgroup.com.br/avaliacao` | `pagina-funil-avaliacao` | ✅ | ✅ | ✅ | ❌ | ❌ | Avaliação · Orçamento Parado |
+| `genosgroup.com.br/ebook` | `lp-genos-ebook` | ✅ | ✅ | ✅ | ❌ | ❌ | LP · Ebook |
+| `genosgroup.com.br/receitaoculta` | `lp-form-receita-oculta-clinicas` | ✅ | ✅ | ✅ | ❌ | ❌ | LP · Receita Oculta |
+| `clinicas.genosgroup.com.br` | `lp-genos-exclusivo-clinicas` | ✅ | ✅ | **❌ `en`** | ❌ | ❌ | LP · Exclusivo Clínicas |
+
+**A medição está redonda; SEO técnico não.** Nenhuma das cinco tem `robots.txt` nem
+`sitemap.xml`, e a `clinicas.` declara inglês numa página em português (§7.1). Ficam
+registrados aqui como dívida conhecida, não como surpresa.
 
 **São cinco deploys separados.** Cada um carrega as próprias tags — ver §1.5.
 
@@ -505,3 +644,70 @@ IDs em uso, os mesmos em todas:
 > O Tag Assistant é ferramenta do Google e **nunca** mostra o Pixel da Meta. Ausência
 > ali não é evidência de ausência na página — esse engano já custou uma investigação
 > inteira neste projeto.
+
+---
+---
+
+# PARTE 4 · A LISTA FINAL
+
+A lista que alguém roda **antes de apontar o primeiro anúncio** para a LP. Leva 15
+minutos e é a única coisa entre o padrão existir e o padrão valer.
+
+Cada item tem **como conferir**, não só o que conferir — item sem verificação é item que
+todo mundo marca sem olhar.
+
+## Medição
+
+| ✓ | Item | Como conferir |
+| --- | --- | --- |
+| ☐ | GA4 na página | Tag Assistant, **aba anônima** |
+| ☐ | Pixel na página | **Meta Pixel Helper** — o Tag Assistant não mostra Pixel |
+| ☐ | Nenhuma tag de terceiro | Tag Assistant: só o `G-` da Genos |
+| ☐ | Grupo de conteúdo | GA4 → Tempo real, dimensão Grupo de conteúdo |
+| ☐ | **O evento de conversão sai** | **Envie um lead de teste real** e veja `generate_lead` no Tempo real |
+| ☐ | O Lead chega na Meta | Gerenciador de Eventos → Testar eventos |
+| ☐ | O lead chega no destino | Olhe a planilha ou o CRM. O evento pode sair e o lead não chegar |
+| ☐ | Funciona com bloqueador | Bloqueie as tags e complete o funil: tem que enviar igual |
+
+## SEO técnico
+
+| ✓ | Item | Como conferir |
+| --- | --- | --- |
+| ☐ | `lang="pt-BR"` | Código-fonte da página, primeira linha do `<html>` |
+| ☐ | `<title>` e `description` | Código-fonte, ou o card de prévia |
+| ☐ | `canonical` na URL final | Código-fonte |
+| ☐ | `og:image` 1200×630 **que carrega** | Cole a URL no depurador de compartilhamento |
+| ☐ | `robots.txt` responde | Abra `/robots.txt` no navegador |
+| ☐ | `sitemap.xml` responde | Abra `/sitemap.xml` no navegador |
+| ☐ | Um `<h1>` só | Ctrl+F no código-fonte por `<h1` |
+
+## Performance
+
+| ✓ | Item | Como conferir |
+| --- | --- | --- |
+| ☐ | LCP < 2,5s | PageSpeed Insights, aba **Celular** |
+| ☐ | CLS < 0,1 | idem |
+| ☐ | Imagem em WebP/AVIF | Aba Network do navegador, ordenada por tamanho |
+| ☐ | Abre em 4G | Network → throttling "Fast 4G" e recarregue |
+
+## Conteúdo
+
+| ✓ | Item | Como conferir |
+| --- | --- | --- |
+| ☐ | Palavra-chave no título, `<h1>` e 1º parágrafo | Leitura |
+| ☐ | Anúncio e página usam as mesmas palavras | Leia o anúncio e a página em seguida |
+| ☐ | A LP está no inventário da Parte 3 | Esta página |
+
+## Uma vez por domínio, não por LP
+
+| ✓ | Item | Como conferir |
+| --- | --- | --- |
+| ☐ | Search Console como propriedade de **Domínio** | Cobre subdomínio e LP futura sozinho |
+| ☐ | Domínio verificado no Meta Business, por DNS | idem |
+| ☐ | Convenção de UTM combinada | `instagram`, nunca `ig` |
+
+---
+
+> **Se um item falhar, pare antes de subir a campanha.** Todos os quatro problemas que
+> esta lista pega são invisíveis em produção: nenhum quebra a tela, e o único outro jeito
+> de descobrir é pelo prejuízo, semanas depois.
