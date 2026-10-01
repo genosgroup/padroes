@@ -8,6 +8,21 @@ do repositório de um projeto é padrão que ninguém acha seis meses depois.
 | --- | --- |
 | [**Checklist de LP**](checklist-lp.md) | Tudo que uma landing page da Genos precisa ter antes de ir ao ar, em quatro frentes: **medição** (GA4, Pixel, eventos, UTM, Search Console), **SEO técnico**, **performance** e **conteúdo**. Com o roteiro em fases, as armadilhas que já custaram caro, o inventário das páginas no ar e a lista de verificação final. |
 
+## Para começar uma LP nova
+
+A pasta [`template-lp/`](template-lp/) tem os arquivos para copiar: as tags, o
+evento de conversão, o `AGENTS.md` e o `robots.txt`. São três valores a trocar,
+e o resto é igual em toda LP da Genos.
+
+Copiar o template é o que faz o padrão valer **em qualquer ferramenta** — Claude,
+Antigravity, ou editor nenhum. O `AGENTS.md` vai junto no repositório novo, então
+não depende de ninguém lembrar de nada.
+
+E para não depender nem de lembrar de copiar o template, existe a
+[skill `medicao-genos`](skill-medicao-genos.md): ela fica na conta da Claude e
+dispara sozinha em qualquer repositório. As duas se completam — a skill cobre o
+dia a dia na Claude, o template cobre qualquer ferramenta.
+
 ## Como usar
 
 O manual tem quatro partes. **A Parte 1 é o roteiro: siga na ordem**, porque cada

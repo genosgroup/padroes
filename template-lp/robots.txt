@@ -1,0 +1,7 @@
+# Só para LP em subdomínio próprio. LP servida sob um caminho do apex
+# (genosgroup.com.br/alguma-coisa) NÃO leva este arquivo: a requisição de
+# /robots.txt nunca chega ao Worker dela, e o arquivo fica inalcançável.
+User-agent: *
+Allow: /
+
+Sitemap: https://SUBDOMINIO.genosgroup.com.br/sitemap.xml
