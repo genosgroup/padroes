@@ -1,6 +1,10 @@
-# Só para LP em subdomínio próprio. LP servida sob um caminho do apex
-# (genosgroup.com.br/alguma-coisa) NÃO leva este arquivo: a requisição de
-# /robots.txt nunca chega ao Worker dela, e o arquivo fica inalcançável.
+# Sem acento de proposito: robots.txt e servido como text/plain sem charset, e
+# o navegador assume latin-1. Acento aqui aparece embaralhado na tela, e nao ha
+# como declarar charset neste arquivo.
+#
+# ATENCAO: so para LP em subdominio proprio. LP servida sob um caminho do apex
+# (genosgroup.com.br/alguma-coisa) NAO leva este arquivo: a requisicao de
+# /robots.txt nunca chega ao Worker dela, e o arquivo fica inalcancavel.
 User-agent: *
 Allow: /
 

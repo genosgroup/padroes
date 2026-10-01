@@ -538,6 +538,11 @@ Allow: /
 Sitemap: https://genosgroup.com.br/sitemap.xml
 ```
 
+> **Escreva o `robots.txt` em ASCII puro, sem acento.** Ele é servido como
+> `text/plain` sem charset, o navegador assume latin-1, e não existe sintaxe para
+> declarar codificação dentro dele. Comentário com acento aparece embaralhado para
+> quem abrir o arquivo — foi o que aconteceu na primeira versão do nosso.
+
 Cuidado com a regra do prefixo (§1.3): em LP servida sob um caminho, o arquivo precisa
 estar onde a rota alcança.
 
@@ -677,7 +682,7 @@ todo mundo marca sem olhar.
 | ☐ | `<title>` e `description` | Código-fonte, ou o card de prévia |
 | ☐ | `canonical` na URL final | Código-fonte |
 | ☐ | `og:image` 1200×630 **que carrega** | Cole a URL no depurador de compartilhamento |
-| ☐ | `robots.txt` responde | Abra `/robots.txt` no navegador |
+| ☐ | `robots.txt` responde, **e sem acento embaralhado** | Abra `/robots.txt` no navegador |
 | ☐ | `sitemap.xml` responde | Abra `/sitemap.xml` no navegador |
 | ☐ | Um `<h1>` só | Ctrl+F no código-fonte por `<h1` |
 
